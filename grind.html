@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Grind | Focus Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Hanken+Grotesk:wght@300..700&family=JetBrains+Mono:wght@300..700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "on-surface": "#1a1c1e",
+          "surface-dim": "#dadadd",
+          "on-primary-container": "#3c5e80",
+          "on-secondary": "#ffffff",
+          "error": "#ba1a1a",
+          "surface-container-lowest": "#ffffff",
+          "surface-container": "#eeedf0",
+          "surface-container-highest": "#e2e2e5",
+          "surface-container-low": "#f4f3f6",
+          "primary-container": "#b5d8ff",
+          "surface-bright": "#faf9fc",
+          "primary": "#3f6183",
+          "on-error": "#ffffff",
+          "tertiary": "#326940",
+          "on-tertiary-container": "#30673d",
+          "on-error-container": "#93000a",
+          "surface-variant": "#e2e2e5",
+          "secondary-container": "#fad3fd",
+          "on-surface-variant": "#42474e",
+          "background": "#faf9fc",
+          "surface": "#faf9fc",
+          "surface-container-high": "#e8e8eb",
+          "error-container": "#ffdad6",
+          "on-background": "#1a1c1e",
+          "secondary": "#725477",
+          "tertiary-container": "#a7e3af",
+          "primary-fixed": "#cfe5ff",
+          "outline-variant": "#c2c7ce",
+          "outline": "#73777e",
+          "on-secondary-container": "#77587c",
+          "on-tertiary": "#ffffff"
+        },
+        borderRadius: {
+          "DEFAULT": "1rem",
+          "lg": "2rem",
+          "xl": "3rem",
+          "full": "9999px"
+        },
+        fontFamily: {
+          "headline-lg": ["Space Grotesk", "sans-serif"],
+          "body-md": ["Hanken Grotesk", "sans-serif"],
+          "display-brand": ["Space Grotesk", "sans-serif"],
+          "label-mono": ["JetBrains Mono", "monospace"]
+        }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Hanken Grotesk', sans-serif; background-color: #faf9fc; transition: background-color 0.3s ease; }
+  h1, h2, h3, .brand-font { font-family: 'Space Grotesk', sans-serif; }
+  .mono-font { font-family: 'JetBrains Mono', monospace; }
+  .glass-card {
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 32px 0 rgba(31,38,135,0.07);
+  }
+  .cyber-pill { transition: all 0.2s ease-in-out; }
+  .cyber-pill:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  #main-header { transition: border-bottom 0.3s ease; }
+</style>
+</head>
+<body class="flex min-h-screen overflow-x-hidden text-on-surface">
+
+<main class="flex-1 flex flex-col min-w-0">
+
+  <!-- HEADER -->
+  <header id="main-header" class="h-20 flex items-center justify-between px-8 border-b border-outline-variant bg-surface/80 backdrop-blur-md sticky top-0 z-10">
+    <div class="flex items-center gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-white" style="font-variation-settings:'FILL' 1;">terminal</span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight text-primary brand-font">grind</h1>
+      </div>
+      <div class="w-px h-8 bg-outline-variant"></div>
+      <div class="flex flex-col">
+        <h2 class="text-xl font-bold brand-font text-on-surface">FOCUS ENGINE: ACTIVE</h2>
+        <p id="today-date" class="text-sm text-outline mono-font"></p>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button class="cyber-pill mode-btn h-10 px-5 rounded-full text-sm font-bold flex items-center gap-2 transition-all" data-mode="normal">
+        <span class="mode-dot w-1.5 h-1.5 rounded-full bg-white animate-pulse hidden"></span>normal
+      </button>
+      <button class="cyber-pill mode-btn h-10 px-5 rounded-full border border-outline text-outline text-sm font-bold flex items-center gap-2 transition-all" data-mode="exam">
+        <span class="mode-dot w-1.5 h-1.5 rounded-full bg-white animate-pulse hidden"></span>exam
+      </button>
+      <button class="cyber-pill mode-btn h-10 px-5 rounded-full border border-outline text-outline text-sm font-bold flex items-center gap-2 transition-all" data-mode="crisis">
+        <span class="mode-dot w-1.5 h-1.5 rounded-full bg-white animate-pulse hidden"></span>crisis
+      </button>
+    </div>
+  </header>
+
+  <div class="p-8 flex flex-col gap-6 max-w-[1200px] mx-auto w-full">
+
+    <!-- ADD TASK CARD -->
+    <section class="glass-card rounded-lg p-8 flex flex-col gap-6 border-2 border-primary-container">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined">add_task</span>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-lg font-bold brand-font">Initialize Workflow</h3>
+          <p class="text-sm text-outline">Add a new objective to the Focus Engine.</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        <div class="md:col-span-5">
+          <label class="block text-xs font-bold text-outline mb-2 uppercase tracking-tighter">What do you need to do?</label>
+          <input id="task-input" class="w-full bg-surface-container-low border border-outline-variant rounded-xl h-12 px-4 focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-outline-variant" placeholder="e.g., Prepare for DSA exam" type="text"/>
+        </div>
+        <div class="md:col-span-3">
+          <label class="block text-xs font-bold text-outline mb-2 uppercase tracking-tighter">Deadline</label>
+          <input id="deadline-input" class="w-full bg-surface-container-low border border-outline-variant rounded-xl h-12 px-4 focus:ring-2 focus:ring-primary focus:outline-none text-sm" type="date"/>
+        </div>
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-outline mb-2 uppercase tracking-tighter">Priority</label>
+          <select id="priority-input" class="w-full bg-surface-container-low border border-outline-variant rounded-xl h-12 px-4 focus:ring-2 focus:ring-primary focus:outline-none text-sm appearance-none">
+            <option>Medium</option>
+            <option>High</option>
+            <option>Critical</option>
+            <option>Low</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <button id="breakdown-btn" class="w-full h-12 bg-tertiary text-on-tertiary rounded-xl font-bold flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-95 transition-transform">
+            BREAK IT DOWN ✦
+          </button>
+        </div>
+      </div>
+      <div class="mt-3">
+        <button id="syllabus-toggle" class="text-sm font-bold text-outline border border-outline-variant rounded-xl px-3 py-2 bg-surface-container-low transition-all">＋ Add syllabus context (optional)</button>
+        <div id="syllabus-section" class="mt-3 hidden">
+          <label class="block text-xs font-bold text-outline mb-2 uppercase tracking-tighter">Your syllabus (optional)</label>
+          <textarea id="syllabus-input" rows="3" class="w-full bg-surface-container-low border border-outline-variant rounded-xl p-3 text-sm focus:outline-none" placeholder="Paste your syllabus topics here... e.g. Unit 1: Arrays, Linked Lists | Unit 2: Trees, Graphs | Unit 3: Sorting algorithms"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- DAILY MISSION -->
+    <section id="daily-mission-card" class="glass-card rounded-lg p-6 flex items-center justify-between border-l-4 border-primary hidden">
+      <div class="flex items-center gap-4">
+        <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary">my_location</span>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-outline uppercase tracking-widest mono-font">Daily Mission</p>
+          <p id="daily-mission-text" class="font-bold text-lg brand-font">—</p>
+          <p id="daily-mission-sub" class="text-sm text-outline"></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="daily-mission-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-primary-container text-on-primary-container mono-font"></span>
+        <button id="daily-mission-done" class="px-4 py-2 bg-tertiary text-on-tertiary rounded-xl font-bold text-sm hover:brightness-110 transition-all">
+          Done ✓
+        </button>
+      </div>
+    </section>
+
+    <!-- TWO COLUMN GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- TODAY'S LOOP -->
+      <section class="glass-card rounded-lg p-6 flex flex-col gap-4">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-lg font-bold brand-font flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">sync</span> Today's Loop
+          </h3>
+          <span id="done-badge" class="text-xs font-bold bg-primary-container text-on-primary-container px-2 py-1 rounded-md mono-font">0% DONE</span>
+        </div>
+        <div id="today-loop-items" class="flex flex-col gap-3">
+          <!-- dynamic tasks here -->
+        </div>
+        <button id="reschedule-btn" class="mt-2 border-2 border-dashed border-outline-variant rounded-2xl p-4 text-outline font-bold flex items-center justify-center gap-2 hover:border-primary hover:text-primary transition-all group">
+          <span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500">add</span>
+          reschedule something
+        </button>
+      </section>
+
+      <!-- RIGHT COLUMN -->
+      <div class="flex flex-col gap-6">
+
+        <!-- TASK PROGRESS -->
+        <section class="glass-card rounded-lg p-6 flex flex-col gap-4">
+          <h3 class="text-lg font-bold brand-font mb-2">Task Progress</h3>
+          <div id="task-progress-list" class="flex flex-col gap-6">
+            <p class="text-sm text-outline italic">No tasks yet. Add one above!</p>
+          </div>
+        </section>
+
+        <!-- JOURNAL -->
+        <section class="glass-card rounded-lg p-6 flex flex-col gap-4 border-t-4 border-secondary">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-secondary">dark_mode</span>
+            <h3 class="text-lg font-bold brand-font">Journal Reflection 🌙</h3>
+          </div>
+          <div class="flex flex-col gap-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-outline uppercase">What did you complete?</label>
+                <textarea id="finished-input" class="w-full bg-white/50 border border-secondary/20 rounded-xl p-3 text-sm focus:ring-1 focus:ring-secondary focus:outline-none" placeholder="Bullet points..." rows="2"></textarea>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-outline uppercase">What got in the way?</label>
+                <textarea id="blockers-input" class="w-full bg-white/50 border border-secondary/20 rounded-xl p-3 text-sm focus:ring-1 focus:ring-secondary focus:outline-none" placeholder="Blocked by..." rows="2"></textarea>
+              </div>
+            </div>
+            <div class="bg-primary-container/30 rounded-2xl p-4 border border-primary-container relative">
+              <div class="absolute -top-2 left-4 px-2 bg-primary-container text-[10px] font-bold text-on-primary-container rounded uppercase">AI Reflection</div>
+              <div class="flex gap-3">
+                <span class="material-symbols-outlined text-primary text-sm mt-1">auto_awesome</span>
+                <div id="ai-insights" class="text-sm italic text-on-primary-container">
+                  Your reflection response will appear here after journaling.
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button id="journal-submit" class="flex-1 py-3 bg-primary text-white rounded-xl font-bold hover:brightness-110 transition-all">Submit Journal</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Calendar integration removed for student-focused build -->
+
+    <!-- STATS ROW -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-4 pb-8">
+      <div class="glass-card rounded-full px-8 py-6 flex flex-col items-center justify-center text-center gap-1 border-b-4 border-primary">
+        <p class="text-[10px] font-bold text-outline uppercase mono-font">Tasks Due Today</p>
+        <p id="tasks-due-count" class="text-3xl font-bold brand-font text-primary">0</p>
+      </div>
+      <div class="glass-card rounded-full px-8 py-6 flex flex-col items-center justify-center text-center gap-1 border-b-4 border-tertiary">
+        <p class="text-[10px] font-bold text-outline uppercase mono-font">Streak (days)</p>
+        <p class="text-3xl font-bold brand-font text-tertiary" id="streak-count">1</p>
+      </div>
+      <div class="glass-card rounded-full px-8 py-6 flex flex-col items-center justify-center text-center gap-1 border-b-4 border-secondary">
+        <p class="text-[10px] font-bold text-outline uppercase mono-font">Hours Planned</p>
+        <p id="hours-planned" class="text-3xl font-bold brand-font text-secondary">0</p>
+      </div>
+      <div id="mode-stat-card" class="glass-card rounded-full px-8 py-6 flex flex-col items-center justify-center text-center gap-1 border-b-4 border-tertiary">
+        <p class="text-[10px] font-bold text-outline uppercase mono-font">Current Mode</p>
+        <div class="flex items-center gap-2">
+          <span id="mode-stat-dot" class="w-3 h-3 rounded-full bg-tertiary"></span>
+          <p id="mode-stat-text" class="text-lg font-bold brand-font">NORMAL</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<!-- FLOATING BOLT -->
+<div class="fixed bottom-8 right-8 z-50">
+  <button class="w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-transform">
+    <span class="material-symbols-outlined text-3xl" style="font-variation-settings:'FILL' 1;">bolt</span>
+  </button>
+</div>
+
+<script>
+  const API = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'http://127.0.0.1:8000';
+  let currentMode = 'normal';
+  let pendingTasks = JSON.parse(localStorage.getItem('grind-tasks') || '[]');
+  let aiScheduledPlan = JSON.parse(localStorage.getItem('grind-schedule') || '[]');
+
+  // DATE
+  const todayDate = new Date();
+  const dateEl = document.getElementById('today-date');
+  if (dateEl) dateEl.textContent = todayDate.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+  // MODE CONFIG
+  const modes = {
+    normal: { btnBg: 'bg-tertiary', btnText: 'text-on-tertiary', accent: '#326940', pageBg: '#faf9fc', dotColor: '#326940', statBorder: 'border-tertiary' },
+    exam:   { btnBg: 'bg-amber-500', btnText: 'text-white',       accent: '#d97706', pageBg: '#fef3c7', dotColor: '#d97706', statBorder: 'border-amber-500' },
+    crisis: { btnBg: 'bg-red-600',   btnText: 'text-white',       accent: '#b91c1c', pageBg: '#fee2e2', dotColor: '#b91c1c', statBorder: 'border-red-600' }
+  };
+
+  function applyMode(mode) {
+    currentMode = mode;
+    localStorage.setItem('grind-mode', mode);
+    const config = modes[mode];
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.className = 'cyber-pill mode-btn h-10 px-5 rounded-full border border-outline text-outline text-sm font-bold flex items-center gap-2 transition-all';
+      btn.querySelector('.mode-dot').classList.add('hidden');
+    });
+
+    const activeBtn = document.querySelector(`.mode-btn[data-mode="${mode}"]`);
+    if (activeBtn) {
+      activeBtn.classList.remove('border', 'border-outline', 'text-outline');
+      activeBtn.classList.add(config.btnBg, config.btnText);
+      activeBtn.querySelector('.mode-dot').classList.remove('hidden');
+    }
+
+    document.body.style.backgroundColor = config.pageBg;
+    const header = document.getElementById('main-header');
+    if (header) header.style.borderBottom = `3px solid ${config.accent}`;
+    document.querySelector('main').style.boxShadow = mode !== 'normal' ? `inset 0 0 120px 0 ${config.accent}33` : 'none';
+
+    const statText = document.getElementById('mode-stat-text');
+    const statDot = document.getElementById('mode-stat-dot');
+    const statCard = document.getElementById('mode-stat-card');
+    if (statText) statText.textContent = mode.toUpperCase();
+    if (statDot) statDot.style.backgroundColor = config.dotColor;
+    if (statCard) statCard.className = `glass-card rounded-full px-8 py-6 flex flex-col items-center justify-center text-center gap-1 border-b-4 ${config.statBorder}`;
+  }
+
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.addEventListener('click', function() { applyMode(this.dataset.mode); });
+  });
+
+  // PERSISTENCE
+  function savePendingTasks() {
+    localStorage.setItem('grind-tasks', JSON.stringify(pendingTasks));
+  }
+
+  function removePendingTask(index) {
+    pendingTasks.splice(index, 1);
+    savePendingTasks();
+    renderAllTasks();
+  }
+
+  // RENDER ALL TASKS FROM STATE
+  function renderAllTasks() {
+    const progressList = document.getElementById('task-progress-list');
+    const loopList = document.getElementById('today-loop-items');
+    if (progressList) progressList.innerHTML = pendingTasks.length === 0 ? '<p class="text-sm text-outline italic">No tasks yet. Add one above!</p>' : '';
+    if (loopList) loopList.innerHTML = '';
+
+    const todayStr = todayDate.toISOString().split('T')[0];
+    const now = new Date();
+    let tasksDueToday = 0;
+    let totalMinutes = 0;
+
+    pendingTasks.forEach((t, i) => {
+      const deadline = new Date(t.deadline);
+      const isOverdue = deadline < now && deadline.toDateString() !== now.toDateString();
+      if (isOverdue) return;
+      if (t.deadline === todayStr) tasksDueToday++;
+      totalMinutes += 90;
+      renderTaskProgressItem(t.task, t.deadline, t.priority, i);
+      // subtasks rendered by renderAllSubtasks()
+    });
+
+    const dueEl = document.getElementById('tasks-due-count');
+    if (dueEl) dueEl.textContent = tasksDueToday;
+    const hoursEl = document.getElementById('hours-planned');
+    if (hoursEl) hoursEl.textContent = (totalMinutes / 60).toFixed(1);
+  }
+
+  function renderTaskProgressItem(task, deadline, priority, index) {
+    const list = document.getElementById('task-progress-list');
+    if (!list) return;
+    const colors = { High: 'bg-error', Critical: 'bg-error', Medium: 'bg-primary', Low: 'bg-tertiary' };
+    const textColors = { High: 'text-error', Critical: 'text-error', Medium: 'text-primary', Low: 'text-tertiary' };
+    const daysLeft = Math.ceil((new Date(deadline) - new Date()) / 1000 / 3600 / 24);
+    const daysLabel = daysLeft <= 0 ? 'OVERDUE' : daysLeft === 1 ? '1 day left' : `${daysLeft} days left`;
+    const daysColor = daysLeft <= 1 ? 'text-red-500' : daysLeft <= 3 ? 'text-amber-500' : 'text-outline';
+    const div = document.createElement('div');
+    div.className = 'flex flex-col gap-2';
+    div.innerHTML = `
+      <div class="flex justify-between items-end gap-3">
+        <div>
+          <p class="text-sm font-bold ${textColors[priority] || 'text-primary'} uppercase tracking-tighter">${priority}</p>
+          <p class="font-bold">${task}</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <p class="text-xs font-bold text-outline mono-font">${deadline}</p>
+          <p class="text-xs font-bold ${daysColor} mono-font">${daysLabel}</p>
+          <button type="button" class="text-xs font-bold text-error hover:underline" data-remove="${index}">Remove</button>
+        </div>
+      </div>
+      <div class="h-3 w-full bg-surface-container-highest rounded-full overflow-hidden">
+        <div class="h-full ${colors[priority] || 'bg-primary'} rounded-full transition-all" style="width: 0%" id="progress-bar-${index}"></div>
+      </div>
+    `;
+    div.querySelector(`[data-remove="${index}"]`).addEventListener('click', (e) => { e.stopPropagation(); removePendingTask(index); });
+    list.appendChild(div);
+  }
+
+  // CHECKBOX
+  function setupCheckbox(item) {
+    item.addEventListener('click', function() {
+      const checkbox = this.querySelector('.checkbox-box');
+      if (!checkbox) return;
+      const isChecked = checkbox.dataset.checked === 'true';
+      if (isChecked) {
+        checkbox.dataset.checked = 'false';
+        checkbox.classList.remove('bg-tertiary', 'border-tertiary');
+        checkbox.innerHTML = '';
+        this.classList.remove('opacity-60');
+        this.querySelectorAll('p').forEach(p => p.classList.remove('line-through'));
+      } else {
+        checkbox.dataset.checked = 'true';
+        checkbox.classList.add('bg-tertiary', 'border-tertiary');
+        checkbox.innerHTML = '<span class="material-symbols-outlined text-white" style="font-variation-settings:\'wght\' 700;font-size:16px;line-height:1;">check</span>';
+        this.classList.add('opacity-60');
+        this.querySelectorAll('p').forEach(p => p.classList.add('line-through'));
+      }
+      updateDoneBadge();
+    });
+  }
+
+  function updateDoneBadge() {
+    const items = document.querySelectorAll('#today-loop-items .task-item');
+    const done = document.querySelectorAll('#today-loop-items .task-item.opacity-60').length;
+    const total = items.length;
+    const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+    const badge = document.getElementById('done-badge');
+    if (badge) badge.textContent = `${pct}% DONE`;
+  }
+
+  // RESCHEDULE
+  document.getElementById('reschedule-btn').addEventListener('click', function() {
+    if (document.getElementById('reschedule-input')) return;
+    const div = document.createElement('div');
+    div.className = 'flex gap-2 mt-2';
+    div.innerHTML = `
+      <input id="reschedule-input" class="flex-1 bg-surface-container-low border border-outline-variant rounded-xl h-10 px-4 text-sm focus:outline-none" placeholder="what came up? e.g. family function" />
+      <select id="reschedule-duration" class="bg-surface-container-low border border-outline-variant rounded-xl h-10 px-3 text-sm focus:outline-none">
+        <option value="1">1 hour</option>
+        <option value="2" selected>2 hours</option>
+        <option value="3">3 hours</option>
+        <option value="5">Half day (5h)</option>
+        <option value="10">Rest of day</option>
+      </select>
+      <button id="reschedule-submit" class="px-4 h-10 bg-amber-500 text-white rounded-xl font-bold text-sm">Reschedule</button>
+    `;
+    this.parentNode.insertBefore(div, this);
+    document.getElementById('reschedule-submit').addEventListener('click', async function() {
+      const btn = this;
+      const input = document.getElementById('reschedule-input');
+      if (!input?.value) return;
+      btn.textContent = 'Rescheduling...';
+      btn.disabled = true;
+      try {
+        const durationHours = document.getElementById('reschedule-duration')?.value || '2';
+        const tasksWithContext = pendingTasks.map(t => ({ task: t.task, deadline: t.deadline, priority: t.priority }));
+        // include both user-saved subtasks and any AI-scheduled plan items so backend knows all occupied slots
+        const userSchedule = pendingTasks.flatMap(t => (t.subtasks || []).map(s => ({ task: s.name, parentTask: t.task, date: s.date, start_time: s.start_time, duration_minutes: s.duration_minutes })));
+        const aiSchedule = (aiScheduledPlan || []).map(p => ({ task: p.task, parentTask: p.parentTask || null, date: p.date, start_time: p.start_time, duration_minutes: p.duration_minutes }));
+        const currentSchedule = userSchedule.concat(aiSchedule);
+        const constraint = `${input.value} (unavailable for approximately ${durationHours} hours)`;
+        const requestBody = {
+          tasks: tasksWithContext,
+          current_schedule: currentSchedule,
+          constraint,
+          duration_hours: Number(durationHours)
+        };
+        const res = await fetch(`${API}/tasks/replan`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) });
+        const data = await res.json();
+        if (data.plan && Array.isArray(data.plan) && data.plan.length > 0) {
+          renderSchedule({ plan: data.plan, reasoning: data.reasoning });
+          input.parentNode.remove();
+          showToast('Schedule updated! ✦');
+        } else {
+          showToast(data.error || 'Could not reschedule', true);
+        }
+      } catch (e) {
+        showToast('Could not reschedule', true);
+      } finally {
+        // reset button state so it doesn't stay stuck
+        try { btn.textContent = 'Reschedule'; btn.disabled = false; } catch (e) {}
+      }
+    });
+  });
+
+  // BREAK IT DOWN
+  // syllabus toggle
+  const syllabusToggleBtn = document.getElementById('syllabus-toggle');
+  if (syllabusToggleBtn) {
+    syllabusToggleBtn.addEventListener('click', function() {
+      const sec = document.getElementById('syllabus-section');
+      if (!sec) return;
+      sec.classList.toggle('hidden');
+    });
+  }
+
+  function renderAllSubtasks() {
+    const loop = document.getElementById('today-loop-items');
+    if (!loop) return;
+
+    loop.querySelectorAll('.ai-scheduled, .day-header').forEach(el => el.remove());
+
+    let allSubtasks = [];
+    pendingTasks.forEach(t => {
+      (t.subtasks || []).forEach(s => {
+        allSubtasks.push({ ...s, parentTask: t.task });
+      });
+    });
+
+    if (allSubtasks.length === 0) return;
+
+    allSubtasks.sort((a, b) => {
+      const dateCompare = (a.date || '').localeCompare(b.date || '');
+      if (dateCompare !== 0) return dateCompare;
+      return (a.start_time || '').localeCompare(b.start_time || '');
+    });
+
+    const byDate = {};
+    allSubtasks.forEach(s => {
+      const key = s.date || 'unknown';
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(s);
+    });
+
+
+    Object.keys(byDate).sort().forEach(date => {
+      const dateObj = new Date(date + 'T00:00:00');
+      const dateLabel = dateObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+
+      const header = document.createElement('div');
+      header.className = 'day-header flex items-center gap-3 mt-3 mb-1';
+      header.innerHTML = `
+        <span class="text-xs font-bold text-primary mono-font uppercase tracking-widest">${dateLabel}</span>
+        <div class="flex-1 h-px bg-primary-container"></div>
+      `;
+      loop.appendChild(header);
+
+      byDate[date].forEach(s => {
+        const start = s.start_time || '09:00';
+        const dur = Number(s.duration_minutes || 60);
+        const toMins = (t) => { const p = (''+t).split(':'); return (parseInt(p[0],10)||0)*60 + (parseInt(p[1],10)||0); };
+        const minsTo24 = (m) => { m = (m + 24*60)%(24*60); const hh = Math.floor(m/60); const mm = m%60; return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}` };
+        const format12 = (t24) => { const p = (''+t24).split(':'); let hh = parseInt(p[0]||0,10); const mm = parseInt(p[1]||0,10); const ap = hh>=12?'PM':'AM'; hh = hh%12; if(hh===0) hh=12; return `${hh}:${String(mm).padStart(2,'0')} ${ap}` };
+        const end24 = minsTo24(toMins(start) + dur);
+        const timeStr = `${format12(start)} - ${format12(end24)}`;
+
+        const div = document.createElement('div');
+        div.className = 'ai-scheduled task-item flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer';
+        div.innerHTML = `
+          <div class="checkbox-box w-6 h-6 border-2 border-outline-variant rounded-md flex items-center justify-center"></div>
+          <div class="flex-1">
+            <p class="text-xs font-bold text-outline mono-font">${timeStr}</p>
+            <p class="font-medium text-on-surface-variant">${s.name}</p>
+            <p class="text-xs text-outline">${s.parentTask}</p>
+          </div>
+          <span class="text-xs text-outline mono-font">${s.duration_minutes}m</span>
+        `;
+        loop.appendChild(div);
+        setupCheckbox(div);
+      });
+    });
+
+    updateDoneBadge();
+    // Re-render any AI-scheduled plan items so they persist alongside subtasks
+    try {
+      if (aiScheduledPlan && Array.isArray(aiScheduledPlan) && aiScheduledPlan.length > 0) {
+        // build a set of existing subtask keys to avoid duplicates
+        const existingKeys = new Set();
+        (allSubtasks || []).forEach(s => {
+          const k = `${s.name}||${s.date||''}||${s.start_time||''}||${s.duration_minutes||''}`;
+          existingKeys.add(k);
+        });
+
+        // group ai plan by date
+        const aiByDate = {};
+        aiScheduledPlan.forEach(p => {
+          const key = p.date || new Date().toISOString().split('T')[0];
+          if (!aiByDate[key]) aiByDate[key] = [];
+          aiByDate[key].push(p);
+        });
+
+        Object.keys(aiByDate).sort().forEach(date => {
+          const dateObj = new Date(date + 'T00:00:00');
+          const dateLabel = dateObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+          // add header only if not already present for this date
+          const header = document.createElement('div');
+          header.className = 'day-header flex items-center gap-3 mt-3 mb-1';
+          header.innerHTML = `
+            <span class="text-xs font-bold text-primary mono-font uppercase tracking-widest">${dateLabel}</span>
+            <div class="flex-1 h-px bg-primary-container"></div>
+          `;
+          loop.appendChild(header);
+
+          aiByDate[date].forEach(p => {
+            // skip if duplicate of a real subtask
+            const dupKey = `${p.task}||${p.date||''}||${p.start_time||''}||${p.duration_minutes||''}`;
+            if (existingKeys.has(dupKey)) return;
+
+            const start = p.start_time || '09:00';
+            const dur = Number(p.duration_minutes || 60);
+            const toMins = (t) => { const sp = (''+t).split(':'); return (parseInt(sp[0],10)||0)*60 + (parseInt(sp[1],10)||0); };
+            const minsTo24 = (m) => { m = (m + 24*60)%(24*60); const hh = Math.floor(m/60); const mm = m%60; return `${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}` };
+            const format12 = (t24) => { const p = (''+t24).split(':'); let hh = parseInt(p[0]||0,10); const mm = parseInt(p[1]||0,10); const ap = hh>=12?'PM':'AM'; hh = hh%12; if(hh===0) hh=12; return `${hh}:${String(mm).padStart(2,'0')} ${ap}` };
+            const end24 = minsTo24(toMins(start) + dur);
+            const timeStr = `${format12(start)} - ${format12(end24)}`;
+
+            const div = document.createElement('div');
+            div.className = 'ai-scheduled task-item flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer';
+            div.innerHTML = `
+              <div class="checkbox-box w-6 h-6 border-2 border-outline-variant rounded-md flex items-center justify-center"></div>
+              <div class="flex-1">
+                <p class="text-xs font-bold text-outline mono-font">${timeStr}</p>
+                <p class="font-medium text-on-surface-variant">${p.task}</p>
+              </div>
+              <span class="text-xs text-outline mono-font">${p.duration_minutes}m</span>
+            `;
+            loop.appendChild(div);
+            setupCheckbox(div);
+          });
+        });
+      }
+    } catch(e) { console.error('render AI plan failed', e); }
+    // Also persist AI plan to memory
+    try { localStorage.setItem('grind-schedule', JSON.stringify(aiScheduledPlan || [])); } catch(e) {}
+  }
+
+  document.getElementById('breakdown-btn').addEventListener('click', async function() {
+    const taskInput = document.getElementById('task-input');
+    const dateInput = document.getElementById('deadline-input');
+    const priorityInput = document.getElementById('priority-input');
+    const syllabusInput = document.getElementById('syllabus-input');
+    const syllabus = syllabusInput?.value?.trim() || '';
+    if (!taskInput?.value) { showToast('Enter a task first!', true); return; }
+    if (!dateInput?.value) { showToast('Pick a deadline!', true); return; }
+    this.textContent = 'AI is thinking...';
+    this.disabled = true;
+    try {
+      const res = await fetch(`${API}/tasks/breakdown`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          task: taskInput.value, 
+          deadline: dateInput.value, 
+          syllabus: syllabus,
+          existing_tasks: pendingTasks.map(t => ({ 
+            task: t.task, 
+            deadline: t.deadline, 
+            subtasks: (t.subtasks || []).map(s => ({ name: s.name, date: s.date, start_time: s.start_time, duration_minutes: s.duration_minutes }))
+          }))
+        })
+      });
+      const data = await res.json();
+      if (data.breakdown && !data.breakdown.error) {
+        pendingTasks.push({ 
+          task: taskInput.value, 
+          deadline: dateInput.value, 
+          priority: priorityInput.value, 
+          subtasks: data.breakdown.subtasks || [] 
+        });
+        savePendingTasks();
+        
+        // Clear and re-render everything
+        const progressList = document.getElementById('task-progress-list');
+        const loopList = document.getElementById('today-loop-items');
+        if (progressList) progressList.innerHTML = '';
+        if (loopList) loopList.innerHTML = '';
+        
+        renderAllTasks();
+        renderAllSubtasks();
+        updateDailyMission();
+        
+        if (data.breakdown.reasoning) {
+          const insightsEl = document.getElementById('ai-insights');
+          if (insightsEl) insightsEl.textContent = data.breakdown.reasoning;
+        }
+        
+        showToast('Task broken down! ✦');
+        taskInput.value = '';
+        dateInput.value = '';
+        const syllabusInput = document.getElementById('syllabus-input');
+        if (syllabusInput) syllabusInput.value = '';
+        checkAutoMode();
+      } else {
+        const errorMessage = data.breakdown?.error || data.error || 'AI error — try again';
+        showToast(errorMessage, true);
+      }
+    } catch (e) {
+      showToast('Backend not reachable', true);
+    }
+    this.textContent = 'BREAK IT DOWN ✦';
+    this.disabled = false;
+  });
+
+  // RENDER SCHEDULE FROM REPLAN
+  function renderSchedule(data) {
+    const loop = document.getElementById('today-loop-items');
+    if (!loop) return;
+
+    // Remove only previously AI-scheduled items and day headers
+    loop.querySelectorAll('.ai-scheduled, .day-header').forEach(el => el.remove());
+
+    const plan = data.plan || [];
+    if (plan.length === 0) return;
+
+    // helpers: convert 24h HH:MM to minutes, minutes to 24h, and format 12h AM/PM
+    function toMinutes(t) {
+      if (!t) return 0;
+      const parts = ('' + t).split(':');
+      const h = parseInt(parts[0], 10) || 0;
+      const m = parseInt(parts[1], 10) || 0;
+      return h * 60 + m;
+    }
+    function minutesTo24(mins) {
+      mins = (mins + 24*60) % (24*60);
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+    }
+    function format12(t24) {
+      if (!t24) return '';
+      const mins = toMinutes(t24);
+      let h = Math.floor(mins / 60);
+      const m = mins % 60;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12; if (h === 0) h = 12;
+      return `${h}:${String(m).padStart(2,'0')} ${ampm}`;
+    }
+
+    // Group plan items by date (fallback to today if no date given)
+    const todayStr = new Date().toISOString().split('T')[0];
+    const byDate = {};
+    plan.forEach(p => {
+      const key = p.date || todayStr;
+      if (!byDate[key]) byDate[key] = [];
+      byDate[key].push(p);
+    });
+
+    // Sort each day's items by start_time, then render grouped by date
+    Object.keys(byDate).sort().forEach(date => {
+      const dayItems = byDate[date].sort((a, b) => ('' + (a.start_time || '')).localeCompare('' + (b.start_time || '')));
+      const dateObj = new Date(date + 'T00:00:00');
+      const dateLabel = dateObj.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' });
+
+      const header = document.createElement('div');
+      header.className = 'day-header flex items-center gap-3 mt-3 mb-1';
+      header.innerHTML = `
+        <span class="text-xs font-bold text-primary mono-font uppercase tracking-widest">${dateLabel}</span>
+        <div class="flex-1 h-px bg-primary-container"></div>
+      `;
+      loop.appendChild(header);
+
+      dayItems.forEach(p => {
+        const start = p.start_time || '09:00';
+        const dur = Number(p.duration_minutes || 60);
+        const end24 = minutesTo24(toMinutes(start) + dur);
+        const display = `${format12(start)} - ${format12(end24)}`;
+
+        const div = document.createElement('div');
+        div.className = 'ai-scheduled task-item flex items-center gap-4 p-4 rounded-2xl bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer';
+        div.innerHTML = `
+          <div class="checkbox-box w-6 h-6 border-2 border-outline-variant rounded-md flex items-center justify-center"></div>
+          <div class="flex-1">
+            <p class="text-xs font-bold text-primary mono-font">${display}</p>
+            <p class="font-medium">${p.task}</p>
+          </div>
+          <span class="text-xs text-outline mono-font">${p.duration_minutes}m</span>
+        `;
+        loop.appendChild(div);
+        setupCheckbox(div);
+      });
+    });
+
+    if (data.reasoning) {
+      const ai = document.getElementById('ai-insights');
+      if (ai) ai.textContent = data.reasoning;
+    }
+
+    localStorage.setItem('grind-schedule', JSON.stringify(plan));
+    // keep an in-memory copy so renderAllSubtasks can re-render it
+    aiScheduledPlan = plan;
+    updateDoneBadge();
+  }
+
+  // JOURNAL SUBMIT
+  document.getElementById('journal-submit').addEventListener('click', async function() {
+    const btn = this;
+    const finished = document.getElementById('finished-input')?.value || '';
+    const blockers = document.getElementById('blockers-input')?.value || '';
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${API}/tasks/journal`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ finished, blockers }) });
+      const data = await res.json();
+      if (data.reply) {
+        const ai = document.getElementById('ai-insights');
+        if (ai) ai.textContent = data.reply;
+        showToast('Journal submitted — nice work!');
+      } else {
+        showToast(data.error || 'Could not submit journal', true);
+      }
+    } catch (e) {
+      showToast('Could not submit journal', true);
+    } finally {
+      btn.textContent = 'Submit Journal';
+      btn.disabled = false;
+    }
+  });
+
+  // AUTO MODE
+  function checkAutoMode() {
+    if (pendingTasks.length === 0) return;
+    const now = new Date();
+    let minHoursLeft = Infinity;
+    pendingTasks.forEach(t => {
+      const hoursLeft = (new Date(t.deadline) - now) / 1000 / 3600;
+      if (hoursLeft < minHoursLeft) minHoursLeft = hoursLeft;
+    });
+    const autoMode = minHoursLeft <= 24 ? 'crisis' : minHoursLeft <= 72 ? 'exam' : 'normal';
+    if (autoMode !== currentMode) {
+      applyMode(autoMode);
+      showToast(`Auto-switched to ${autoMode.toUpperCase()} mode!`);
+    }
+  }
+  setInterval(checkAutoMode, 60000);
+
+  // Google Calendar support removed — simplified student-focused UI
+
+  // TOAST
+  function showToast(msg, isError = false) {
+    const toast = document.createElement('div');
+    toast.className = `fixed bottom-24 right-8 z-50 px-6 py-3 rounded-2xl font-bold text-sm shadow-lg ${isError ? 'bg-red-600 text-white' : 'bg-tertiary text-on-tertiary'}`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
+  // ---- DAILY MISSION ----
+  function updateDailyMission() {
+    const card = document.getElementById('daily-mission-card');
+    const missionText = document.getElementById('daily-mission-text');
+    const missionSub = document.getElementById('daily-mission-sub');
+    const missionBadge = document.getElementById('daily-mission-badge');
+    
+    if (pendingTasks.length === 0) {
+      if (card) card.classList.add('hidden');
+      return;
+    }
+
+    // Find task with closest deadline
+    const now = new Date();
+    let urgentTask = pendingTasks.reduce((prev, curr) => {
+      const prevDiff = new Date(prev.deadline) - now;
+      const currDiff = new Date(curr.deadline) - now;
+      return currDiff < prevDiff ? curr : prev;
+    });
+
+    const hoursLeft = Math.round((new Date(urgentTask.deadline) - now) / 1000 / 3600);
+    const daysLeft = Math.round(hoursLeft / 24);
+
+    // Find first incomplete subtask
+    const savedSubtasks = urgentTask.subtasks || [];
+    const firstIncomplete = savedSubtasks.find(s => !s.completed) || savedSubtasks[0];
+    
+    const missionLabel = firstIncomplete 
+      ? firstIncomplete.name 
+      : `Work on: ${urgentTask.task}`;
+
+    const timeLabel = hoursLeft <= 24 
+      ? `${hoursLeft}h left — URGENT` 
+      : `${daysLeft} days left`;
+
+    if (missionText) missionText.textContent = missionLabel;
+    if (missionSub) missionSub.textContent = urgentTask.task;
+    if (missionBadge) {
+      missionBadge.textContent = timeLabel;
+      missionBadge.className = `text-xs font-bold px-3 py-1 rounded-full mono-font ${hoursLeft <= 24 ? 'bg-red-100 text-red-700' : hoursLeft <= 72 ? 'bg-amber-100 text-amber-700' : 'bg-primary-container text-on-primary-container'}`;
+    }
+    if (card) card.classList.remove('hidden');
+  }
+
+  const dmDoneBtn = document.getElementById('daily-mission-done');
+  if (dmDoneBtn) dmDoneBtn.addEventListener('click', function() {
+    showToast('Mission complete! Great work 🎉');
+    const card = document.getElementById('daily-mission-card');
+    if (card) card.classList.add('hidden');
+  });
+
+  // INIT
+  applyMode(localStorage.getItem('grind-mode') || 'normal');
+  try { renderAllTasks(); } catch(e) { console.error('renderAllTasks failed:', e); }
+  try { renderAllSubtasks(); } catch(e) { console.error('renderAllSubtasks failed:', e); }
+  const savedSchedule = localStorage.getItem('grind-schedule');
+  if (savedSchedule) {
+    try {
+      const plan = JSON.parse(savedSchedule);
+      if (plan && plan.length > 0) renderSchedule({ plan });
+    } catch(e) {}
+  }
+  try { updateDailyMission(); } catch(e) {}
+  // Calendar removed; no status to check
+</script>
+</body>
+</html>
